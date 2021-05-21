@@ -1,14 +1,22 @@
 from moneyed import Money
-
 from pcpartpicker.parts import Bytes, ClockSpeed, NetworkSpeed, RPM, Decibels, CFM, Resolution, FrequencyResponse
-
 from pcpartpicker.parts import CPU, CPUCooler, Motherboard, Memory, StorageDrive, GPU, PSU, \
     Case, Fan, FanController, ThermalPaste, OpticalDrive, SoundCard, EthernetCard, WirelessCard, \
     Monitor, ExternalHDD, Headphones, Keyboard, Mouse, Speakers, UPS
-
 from sqlalchemy import Table, Column, Integer, Boolean, String, ForeignKey, TypeDecorator, Numeric
-
+from sqlalchemy import create_engine
 from sqlalchemy.orm import registry, relationship
+from sqlalchemy.orm import sessionmaker, Session
+
+
+class Database:
+
+    def __init__(self, database: str):
+        self._engine = create_engine(database, echo=True)
+        self._session_creator = sessionmaker(bind=self._engine)
+
+    def create_session(self) -> Session:
+        return self._session_creator()
 
 
 class ByteType(TypeDecorator):
@@ -152,6 +160,7 @@ memory_table = Table(
 )
 
 storage_table = Table(
+    'storage',
     mapper_registry.metadata,
     Column('brand', String),
     Column('model', String),
@@ -166,6 +175,7 @@ storage_table = Table(
 )
 
 gpu_table = Table(
+    'gpu',
     mapper_registry.metadata,
     Column('brand', String),
     Column('model', String),
@@ -179,6 +189,7 @@ gpu_table = Table(
 )
 
 psu_table = Table(
+    'psu',
     mapper_registry.metadata,
     Column('brand', String),
     Column('model', String),
@@ -191,6 +202,7 @@ psu_table = Table(
 )
 
 case_table = Table(
+    'case',
     mapper_registry.metadata,
     Column('brand', String),
     Column('model', String),
@@ -204,6 +216,7 @@ case_table = Table(
 )
 
 fan_table = Table(
+    'fan',
     mapper_registry.metadata,
     Column('brand', String),
     Column('model', String),
@@ -217,6 +230,7 @@ fan_table = Table(
 )
 
 fan_controller_table = Table(
+    'fan_controller',
     mapper_registry.metadata,
     Column('brand', String),
     Column('model', String),
@@ -229,6 +243,7 @@ fan_controller_table = Table(
 )
 
 thermal_paste_table = Table(
+    'thermal_paste',
     mapper_registry.metadata,
     Column('brand', String),
     Column('model', String),
@@ -237,6 +252,7 @@ thermal_paste_table = Table(
 )
 
 optical_drive_table = Table(
+    'optical_drive',
     mapper_registry.metadata,
     Column('brand', String),
     Column('model', String),
@@ -250,6 +266,7 @@ optical_drive_table = Table(
 )
 
 soundcard_table = Table(
+    'soundcard',
     mapper_registry.metadata,
     Column('brand', String),
     Column('model', String),
@@ -263,6 +280,7 @@ soundcard_table = Table(
 )
 
 ethernet_card_table = Table(
+    'ethernet_card',
     mapper_registry.metadata,
     Column('brand', String),
     Column('model', String),
@@ -274,6 +292,7 @@ ethernet_card_table = Table(
 )
 
 wireless_card_table = Table(
+    'wireless_card',
     mapper_registry.metadata,
     Column('brand', String),
     Column('model', String),
@@ -284,6 +303,7 @@ wireless_card_table = Table(
 )
 
 monitor_table = Table(
+    'monitor',
     mapper_registry.metadata,
     Column('brand', String),
     Column('model', String),
@@ -297,6 +317,7 @@ monitor_table = Table(
 )
 
 external_hdd_table = Table(
+    'external_hdd',
     mapper_registry.metadata,
     Column('brand', String),
     Column('model', String),
@@ -309,6 +330,7 @@ external_hdd_table = Table(
 )
 
 headphones_table = Table(
+    'headphones',
     mapper_registry.metadata,
     Column('brand', String),
     Column('model', String),
@@ -322,6 +344,7 @@ headphones_table = Table(
 )
 
 keyboard_table = Table(
+    'keyboard',
     mapper_registry.metadata,
     Column('brand', String),
     Column('model', String),
@@ -335,6 +358,7 @@ keyboard_table = Table(
 )
 
 mouse_table = Table(
+    'mouse',
     mapper_registry.metadata,
     Column('brand', String),
     Column('model', String),
@@ -347,6 +371,7 @@ mouse_table = Table(
 )
 
 speakers_table = Table(
+    'speakers',
     mapper_registry.metadata,
     Column('brand', String),
     Column('model', String),
@@ -358,6 +383,7 @@ speakers_table = Table(
 )
 
 ups_table = Table(
+    'ups',
     mapper_registry.metadata,
     Column('brand', String),
     Column('model', String),
@@ -365,14 +391,13 @@ ups_table = Table(
     Column('va_capacity', Integer),
     Column('price_id', ForeignKey('price.id'))
 )
-
 mapper_registry.map_imperatively(Money, money_table)
 mapper_registry.map_imperatively(RPM, rpm_table)
 mapper_registry.map_imperatively(Decibels, decibel_table)
 mapper_registry.map_imperatively(CFM, cfm_table)
 mapper_registry.map_imperatively(Resolution, resolution_table)
-mapper_registry.map_imperatively(FrequencyResponse, frequency_response)
 
+mapper_registry.map_imperatively(FrequencyResponse, frequency_response)
 mapper_registry.map_imperatively(CPU, cpu_table, properties={
     'price': relationship(Money)
 })
@@ -447,6 +472,7 @@ mapper_registry.map_imperatively(Speakers, speakers_table, properties={
     'frequency_response': relationship(FrequencyResponse),
     'price': relationship(Money)
 })
+
 mapper_registry.map_imperatively(UPS, ups_table, properties={
     'price': relationship(Money)
 })
