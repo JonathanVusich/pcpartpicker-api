@@ -2,7 +2,7 @@ from argparse import ArgumentParser
 
 from sanic import Sanic, HTTPResponse, json
 
-from database import Database
+from .database import Database
 
 if __name__ == "__main__":
     parser = ArgumentParser(description="Sanic API for fetching cached pcpartpicker data.")
