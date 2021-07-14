@@ -16,13 +16,13 @@ database = Database(args.database)
 
 
 @app.get('/<region:string>/<part:string>')
-async def tag_handler(region: str, part: str) -> HTTPResponse:
+async def tag_handler(request, region: str, part: str) -> HTTPResponse:
     parts = database.retrieve_items(region, part)
     return json(parts)
 
 
 @app.get('/hello')
-async def hello_handler() -> HTTPResponse:
+async def hello_handler(request) -> HTTPResponse:
     return text("Hello")
 
 
