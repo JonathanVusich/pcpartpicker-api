@@ -8,6 +8,7 @@ parser = ArgumentParser(description="Sanic API for fetching cached pcpartpicker 
 parser.add_argument("--database", type=str)
 parser.add_argument("--host", type=str)
 parser.add_argument("--port", type=int)
+parser.add_argument("--access_log", type=bool)
 args = parser.parse_args()
 
 app = Sanic(name="pcpartpicker-api")
@@ -20,4 +21,4 @@ async def tag_handler(region: str, part: str) -> HTTPResponse:
     return json(parts)
 
 
-app.run(host=args.host, port=args.port)
+app.run(host=args.host, port=args.port, access_log=args.access_log)
