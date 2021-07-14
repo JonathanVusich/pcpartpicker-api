@@ -1,6 +1,6 @@
 from argparse import ArgumentParser
 
-from sanic import Sanic, HTTPResponse, json
+from sanic import Sanic, HTTPResponse, json, text
 
 from .database import Database
 
@@ -19,6 +19,11 @@ database = Database(args.database)
 async def tag_handler(region: str, part: str) -> HTTPResponse:
     parts = database.retrieve_items(region, part)
     return json(parts)
+
+
+@app.get('/hello')
+async def hello_handler() -> HTTPResponse:
+    return text("Hello")
 
 
 app.run(host=args.host, port=args.port, access_log=args.access_log)
