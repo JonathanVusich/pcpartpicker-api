@@ -13,7 +13,8 @@ class Database:
 
     def retrieve_items(self, region: str, part_type: str) -> List[str]:
         if region in self._api.supported_regions and part_type in self._api.supported_parts:
+            formatted_part_type = part_type.replace("-", "_")
             cursor = self._connection.cursor()
-            cursor.execute(f'select * from {region}_{part_type}')
+            cursor.execute(f'select * from {region}_{formatted_part_type}')
             return cursor.fetchall()
         return []
